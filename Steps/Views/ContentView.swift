@@ -9,42 +9,21 @@ import SwiftUI
 import HealthKit
 
 struct ContentView: View {
-    
-    @State private var showSettings: Bool = false
-    @State private var displayType: DisplayType = .chart
     @Environment(HealthDataViewModel.self) var viewModel
+    @State private var showSettings: Bool = false
     @AppStorage("stepGoal") private var stepGoal: Int = 10000
+    @AppStorage("darkMode") private var darkModeEnabled: Bool = false
     
     var body: some View {
         NavigationStack {
-            ZStack {
-                Color(.black).ignoresSafeArea(.all)
-                VStack(alignment: .leading) {
-                    ProgressCircle(viewModel: viewModel)
-                    Group {
-                        switch displayType {
-                            case .list:
-                                ListView(viewModel: viewModel)
-                            case .chart:
-                                ChartView(viewModel: viewModel)
-                        }
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-
-                    Picker("Selection", selection: $displayType) {
-                        ForEach(DisplayType.allCases) { displayType in
-                            Image(systemName: displayType.icon).tag(displayType)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-                    .background(Color.green)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-
-                    InfoDashboardView(viewModel: viewModel)
-                }
+            VStack(alignment: .leading) {
+                ProgressCircle(viewModel: viewModel)
+                DisplayChartOrListView()
+                InfoDashboardView(viewModel: viewModel)
             }
             .task {
-                Settings.shared.handleSettings(stepGoal: stepGoal)
+                Settings.shared.handleUserSettings(stepGoal: stepGoal)
+                Settings.shared.handleDisplaySettings(darkMode: darkModeEnabled)
                 await viewModel.requestAuthorization()
                 do {
                     try await viewModel.fetchStepCountData()
@@ -79,7 +58,7 @@ struct ContentView: View {
                     Text(Date().formatted(date: .abbreviated, time: .omitted))
                 }
             }
-            .sheet(isPresented: $showSettings, content: { SettingsView( stepGoal: $stepGoal) })
+            .sheet(isPresented: $showSettings, content: { SettingsView( stepGoal: $stepGoal, darkModeEnabled: $darkModeEnabled) })
         }
     }
 }

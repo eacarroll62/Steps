@@ -16,7 +16,7 @@ struct ChartView: View {
     
     var body: some View {
         ZStack {
-            Color(.black).ignoresSafeArea(.all)
+            Color(.clear).ignoresSafeArea(.all)
 //            Chart(mockData) { daily in
             Chart(viewModel.healthData.allStepData) { daily in
                 PointMark(x: .value("Labels", daily.date, unit: .hour), y: .value( "Values", daily.count))

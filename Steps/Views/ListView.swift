@@ -14,7 +14,7 @@ struct ListView: View {
     
     var body: some View {
         ZStack {
-            Color(.black).ignoresSafeArea(.all)
+            Color(.clear).ignoresSafeArea(.all)
             List {
 //                ForEach(mockData) { daily in
                     ForEach(viewModel.healthData.allStepData.sorted(by: <), id:\.hashValue) { daily in

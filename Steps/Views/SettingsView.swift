@@ -11,10 +11,20 @@ struct SettingsView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(HealthDataViewModel.self) private var viewModel
     @Binding var stepGoal: Int
-
+    @Binding var darkModeEnabled: Bool
+    
     var body: some View {
         NavigationStack {
             Form {
+                Section(header: Text("Display")) {
+                    Toggle(isOn: $darkModeEnabled) {
+                        Text("Dark Mode")
+                            .onChange(of: darkModeEnabled) {
+                                Settings.shared.handleDisplaySettings(darkMode: darkModeEnabled)
+                            }
+                    }
+                }
+                
                 Section(header: Text("Step Goal")) {
                     VStack(alignment: .leading) {
                         TextField("Goal:", value: $stepGoal, format: .number)
@@ -35,6 +45,6 @@ struct SettingsView: View {
 }
 
 #Preview("SettingsView") {
-    SettingsView(stepGoal: .constant(15000))
+    SettingsView(stepGoal: .constant(15000), darkModeEnabled: .constant(false))
         .environment(HealthDataViewModel())
 }

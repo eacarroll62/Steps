@@ -13,7 +13,11 @@ class Settings {
     
     private init() {}
     
-    func handleSettings(stepGoal: Int) {
+    func handleUserSettings(stepGoal: Int) {
         viewModel.healthData.stepGoal = stepGoal
+    }
+    
+    func handleDisplaySettings(darkMode: Bool) {
+        UIApplication.shared.windows.first?.overrideUserInterfaceStyle = darkMode ? .dark : .light
     }
 }

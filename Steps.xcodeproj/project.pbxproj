@@ -22,6 +22,9 @@
 		A85C6C142AABF0E0000CB5EE /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A85C6C132AABF0E0000CB5EE /* ChartView.swift */; };
 		A87C52102B2BE9F000D9A8EC /* HealthDataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A87C520F2B2BE9F000D9A8EC /* HealthDataViewModel.swift */; };
 		A87C52122B2BEB5E00D9A8EC /* HealthDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A87C52112B2BEB5E00D9A8EC /* HealthDataModel.swift */; };
+		A89C3EED2B5E003C003E1BB4 /* DisplayChartOrListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A89C3EEC2B5E003C003E1BB4 /* DisplayChartOrListView.swift */; };
+		A89C3EEF2B5E0263003E1BB4 /* RingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A89C3EEE2B5E0263003E1BB4 /* RingView.swift */; };
+		A89C3EF12B5E0292003E1BB4 /* DisplayStepDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A89C3EF02B5E0292003E1BB4 /* DisplayStepDataView.swift */; };
 		A8AC34192B30F75E008320F0 /* Junk in Resources */ = {isa = PBXBuildFile; fileRef = A8AC34182B30F75E008320F0 /* Junk */; };
 		A8D3C5F42AEEC345008D4B43 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8D3C5F32AEEC345008D4B43 /* Settings.swift */; };
 /* End PBXBuildFile section */
@@ -58,6 +61,9 @@
 		A85C6C132AABF0E0000CB5EE /* ChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartView.swift; sourceTree = "<group>"; };
 		A87C520F2B2BE9F000D9A8EC /* HealthDataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDataViewModel.swift; sourceTree = "<group>"; };
 		A87C52112B2BEB5E00D9A8EC /* HealthDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDataModel.swift; sourceTree = "<group>"; };
+		A89C3EEC2B5E003C003E1BB4 /* DisplayChartOrListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayChartOrListView.swift; sourceTree = "<group>"; };
+		A89C3EEE2B5E0263003E1BB4 /* RingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RingView.swift; sourceTree = "<group>"; };
+		A89C3EF02B5E0292003E1BB4 /* DisplayStepDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayStepDataView.swift; sourceTree = "<group>"; };
 		A8AC34182B30F75E008320F0 /* Junk */ = {isa = PBXFileReference; lastKnownFileType = text; path = Junk; sourceTree = "<group>"; };
 		A8D3C5F32AEEC345008D4B43 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -98,9 +104,12 @@
 			children = (
 				A85B75D52A926B4500F218F6 /* ContentView.swift */,
 				A85C6C132AABF0E0000CB5EE /* ChartView.swift */,
-				A85B75EB2A92B70B00F218F6 /* InfoDashboardView.swift */,
 				A83873AA2B05063000378B9E /* ListView.swift */,
+				A89C3EEC2B5E003C003E1BB4 /* DisplayChartOrListView.swift */,
 				A80490C52AAD552D00CA8079 /* ProgressCircle.swift */,
+				A89C3EEE2B5E0263003E1BB4 /* RingView.swift */,
+				A89C3EF02B5E0292003E1BB4 /* DisplayStepDataView.swift */,
+				A85B75EB2A92B70B00F218F6 /* InfoDashboardView.swift */,
 				A80490C72AADE44300CA8079 /* SettingsView.swift */,
 			);
 			path = Views;
@@ -221,7 +230,9 @@
 			files = (
 				A85B75D62A926B4500F218F6 /* ContentView.swift in Sources */,
 				A85B75F22A92BC8D00F218F6 /* Utilities.swift in Sources */,
+				A89C3EED2B5E003C003E1BB4 /* DisplayChartOrListView.swift in Sources */,
 				A81B2AF22B31898C00DBEFA4 /* Distance.swift in Sources */,
+				A89C3EEF2B5E0263003E1BB4 /* RingView.swift in Sources */,
 				A85C6C142AABF0E0000CB5EE /* ChartView.swift in Sources */,
 				A80490C82AADE44300CA8079 /* SettingsView.swift in Sources */,
 				A8D3C5F42AEEC345008D4B43 /* Settings.swift in Sources */,
@@ -231,6 +242,7 @@
 				A85B75EC2A92B70B00F218F6 /* InfoDashboardView.swift in Sources */,
 				A87C52102B2BE9F000D9A8EC /* HealthDataViewModel.swift in Sources */,
 				A83873AB2B05063000378B9E /* ListView.swift in Sources */,
+				A89C3EF12B5E0292003E1BB4 /* DisplayStepDataView.swift in Sources */,
 				A81B2AEF2B3139B600DBEFA4 /* Step.swift in Sources */,
 				A85B75D42A926B4500F218F6 /* StepsApp.swift in Sources */,
 			);
