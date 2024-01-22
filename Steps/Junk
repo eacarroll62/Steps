@@ -1,0 +1,499 @@
+@Observable
+class HealthKitManager2 {
+    var healthStore: HKHealthStore?
+    let healthStore = HKHealthStore()
+    var stepCount: Int = 0
+    var stepDistance: Double = 0.00
+    var caloriesBurned: Double = 0.00
+    var moveTime: Double = 0.00
+    var walkingSpeed: Double = 0.00
+    var walkingLength: Double = 0.00
+    var stepGoal: Int = 12000
+    var start: Bool = false
+    var dailyStepCount: [Step] = []
+
+    var goalPercentage: Double {
+        (Double(stepCount) / Double(stepGoal))
+    }
+    var calculatedTime: Double {
+        if walkingSpeed > 0 {
+            return (stepDistance / walkingSpeed) * 60
+        } else {
+            return 0.00
+        }
+    }
+
+    init() {
+        if HKHealthStore.isHealthDataAvailable() {
+            healthStore = HKHealthStore()
+        } else {
+            print("Health Data not Available")
+        }
+    }
+
+    init() {
+        if HKHealthStore.isHealthDataAvailable() {
+            let typesToRead: Set = [
+                HKQuantityType.quantityType(forIdentifier: .stepCount)!,
+                HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned)!,
+                HKQuantityType.quantityType(forIdentifier: .distanceWalkingRunning)!,
+                HKQuantityType.quantityType(forIdentifier: .walkingSpeed)!,
+                HKQuantityType.quantityType(forIdentifier: .walkingStepLength)!,
+                HKQuantityType.quantityType(forIdentifier: .appleMoveTime)!,
+                HKObjectType.activitySummaryType()
+            ]
+
+            self.stepCount = Int(fetchData(quantityType: .stepCount, options: .cumulativeSum, unit: .count()))
+
+            Task.init(priority: .background) {
+                do {
+                    try await healthStore.requestAuthorization(toShare: [], read: typesToRead)
+                    await self.getStepsQuery()
+                    await self.getCaloriesQuery()
+                    await self.getDistanceQuery()
+                    await self.getMoveTime()
+                    await self.getStepLength()
+                    await self.getWalkingSpeed()
+                    self.stepCount = Int(await self.fetchData(quantityType: .stepCount, startDate: Date.now, options: .cumulativeSum, unit: .count()))
+                    self.caloriesBurned = await self.fetchData(quantityType: .activeEnergyBurned, startDate: Date.now, options: .cumulativeSum, unit: .kilocalorie())
+                    self.stepDistance = await self.fetchData(quantityType: .distanceWalkingRunning, startDate: Date.now, options: .cumulativeSum, unit: .mile())
+                    self.moveTime = await self.fetchData(quantityType: .appleMoveTime, startDate: Date.now, options: .cumulativeSum, unit: .minute())
+                    self.walkingLength = await self.fetchData(quantityType: .walkingStepLength, startDate: Date.now, options: .discreteAverage, unit: .inch())
+                    self.walkingSpeed = await self.fetchData(quantityType: .walkingSpeed, startDate: Date.now, options: .discreteAverage, unit: .mile().unitDivided(by: .hour()))
+                    self.dailyStepData = await self.fetchStepChartData(startDate: Date.now)
+                } catch {
+
+                }
+            }
+        }
+    }
+
+    func calculate() {
+        Task.init(priority: .background) {
+            do {
+                await self.getStepsQuery()
+                await self.getCaloriesQuery()
+                await self.getDistanceQuery()
+                await self.getMoveTime()
+                await self.getStepLength()
+                await self.getWalkingSpeed()
+                self.dailyStepData = await self.fetchStepChartData(startDate: Date.now)
+            } catch {
+
+            }
+        }
+    }
+
+    func requestAuthorization() async {
+        let typesToRead: Set = [
+            HKQuantityType.quantityType(forIdentifier: .stepCount)!,
+            HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned)!,
+            HKQuantityType.quantityType(forIdentifier: .distanceWalkingRunning)!,
+            HKQuantityType.quantityType(forIdentifier: .walkingSpeed)!,
+            HKQuantityType.quantityType(forIdentifier: .walkingStepLength)!,
+            HKQuantityType.quantityType(forIdentifier: .appleMoveTime)!,
+            HKObjectType.activitySummaryType()
+        ]
+
+        guard let healthStore = self.healthStore else { return }
+
+        do {
+            try await healthStore.requestAuthorization(toShare: [], read: typesToRead)
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+
+    @MainActor
+    func fetchStepChartData (startDate: Date) async -> [Step] {
+        guard let
+            quantityType = HKObjectType.quantityType(forIdentifier: .stepCount)
+        else {
+            fatalError("Unable to get the step count type")
+        }
+
+        let calendar = Calendar.current
+        let interval = DateComponents(hour: 1)
+
+        guard let
+            anchorDate = calendar.date(bySettingHour: 12, minute: 0, second: 0, of: Date())
+        else {
+            fatalError()
+        }
+
+        let query = HKStatisticsCollectionQuery(
+            quantityType: quantityType,
+            quantitySamplePredicate: nil,
+            options: .cumulativeSum,
+            anchorDate: anchorDate,
+            intervalComponents: interval
+        )
+
+        return await withCheckedContinuation {continuation in
+            query.initialResultsHandler = { query, result, error in
+                guard let
+                    result = result
+                else {
+                    continuation.resume(returning: [])
+                    return
+                }
+
+                var hourlySteps = [Step]()
+
+                result.enumerateStatistics(from: .startOfDay, to: Date()) { statistics, stop in
+                    hourlySteps.append(Step(date: statistics.startDate, count: statistics.sumQuantity()?.doubleValue(for: .count()) ?? 0.00))
+                }
+
+                continuation.resume(returning: hourlySteps)
+            }
+
+            query.statisticsUpdateHandler = {query, statistics, collection, error in
+                guard let
+                    collection = collection
+                else {
+                    continuation.resume(returning: [])
+                    return
+                }
+
+                var hourlySteps = [Step]()
+
+                collection.enumerateStatistics(from: .startOfDay, to: Date()){ (statistics, stop) in
+                    hourlySteps.append(Step(date: statistics.startDate, count: statistics.sumQuantity()?.doubleValue(for: .count()) ?? 0.00))
+                }
+            }
+
+            healthStore.execute(query)
+        }
+    }
+
+    @MainActor
+    func getStepsQuery() {
+        let query = HKStatisticsCollectionQuery(quantityType: HKQuantityType.quantityType(forIdentifier: .stepCount)!, quantitySamplePredicate: nil, options: [.cumulativeSum], anchorDate: Calendar.current.startOfDay(for: Date()), intervalComponents: DateComponents(hour: 24))
+
+        query.initialResultsHandler = {query, results, error in
+            guard let
+                collection = results
+            else {
+                print(error?.localizedDescription ?? "Collection Error")
+                return
+            }
+
+            collection.enumerateStatistics(from: .startOfDay, to: Date()) {(statistics, stop) in
+                if let sumQuantity = statistics.sumQuantity() {
+                    self.stepCount = Int(sumQuantity.doubleValue(for: .count()))
+                    self.dailyStepData.append(Step(date: statistics.startDate, count: sumQuantity.doubleValue(for: .count())))
+                } else {
+                    print(error?.localizedDescription ?? "Error getting initial step results")
+                    return
+                }
+            }
+        }
+
+        query.statisticsUpdateHandler = {query, statistics, collection, error in
+            guard let
+                collection = collection
+            else {
+                print("No Collection Exists")
+                return
+            }
+
+            collection.enumerateStatistics(from: .startOfDay, to: Date()){ (result, stop) in
+                guard let
+                    sumQuantity = result.sumQuantity()?.doubleValue(for: .count())
+                else {
+                    print("Error getting update results")
+                    return
+                }
+                self.stepCount = Int(sumQuantity)
+                self.dailyStepData.append(Step(date: result.startDate, count: sumQuantity))
+            }
+        }
+        healthStore.execute(query)
+    }
+
+    @MainActor
+    func getCaloriesQuery() {
+        let query = HKStatisticsCollectionQuery(quantityType: HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned)!, quantitySamplePredicate: nil, options: [.cumulativeSum], anchorDate: Calendar.current.startOfDay(for: Date()), intervalComponents: DateComponents(hour: 24))
+
+        query.initialResultsHandler = {query, collection, error in
+            guard let collection = collection else {print("No Collection Exists"); return}
+
+            collection.enumerateStatistics(from: .startOfDay, to: Date()) {(statistics, stop) in
+                if let sumQuantity = statistics.sumQuantity() {
+                    self.caloriesBurned = sumQuantity.doubleValue(for: .kilocalorie())
+                } else {
+                    print(error?.localizedDescription ?? "Error getting initial calorie results")
+                    return
+                }
+            }
+        }
+
+        query.statisticsUpdateHandler = {query, statistics, collection, error in
+            guard let collection = collection else {print("No Collection Exists"); return}
+
+            collection.enumerateStatistics(from: .startOfDay, to: Date()){ (result, stop) in
+                guard let sumQuantity = result.sumQuantity()?.doubleValue(for: .kilocalorie()) else {return}
+                self.caloriesBurned = sumQuantity
+            }
+        }
+        healthStore.execute(query)
+    }
+
+    @MainActor
+    func getDistanceQuery() {
+        let query = HKStatisticsCollectionQuery(quantityType: HKQuantityType.quantityType(forIdentifier: .distanceWalkingRunning)!, quantitySamplePredicate: nil, options: [.cumulativeSum], anchorDate: Calendar.current.startOfDay(for: Date()), intervalComponents: DateComponents(day: 1))
+
+        query.initialResultsHandler = {query, collection, error in
+            guard let collection = collection else {print("No Collection Exists"); return}
+
+            collection.enumerateStatistics(from: .startOfDay, to: Date()) {(result, stop) in
+                guard let sumQuantity = result.sumQuantity()?.doubleValue(for: .mile()) else {return}
+                self.stepDistance = sumQuantity
+            }
+        }
+
+        query.statisticsUpdateHandler = {query, statistics, collection, error in
+            guard let collection = collection else {print("No Collection Exists"); return}
+
+            collection.enumerateStatistics(from: .startOfDay, to: Date()){ (result, stop) in
+                guard let sumQuantity = result.sumQuantity()?.doubleValue(for: .mile()) else {return}
+                self.stepDistance = sumQuantity
+            }
+        }
+        healthStore.execute(query)
+    }
+
+    @MainActor
+    func getMoveTime() {
+        let query = HKStatisticsCollectionQuery(quantityType: HKQuantityType.quantityType(forIdentifier: .appleMoveTime)!, quantitySamplePredicate: nil, options: [.cumulativeSum], anchorDate: Calendar.current.startOfDay(for: Date()), intervalComponents: DateComponents(hour: 24))
+
+        query.initialResultsHandler = {query, collection, error in
+            guard let collection = collection else {print("No Collection Exists"); return}
+
+            collection.enumerateStatistics(from: .startOfDay, to: Date()) {(result, stop) in
+                guard let sumQuantity = result.sumQuantity()?.doubleValue(for: .minute()) else {return}
+                self.moveTime = sumQuantity
+            }
+        }
+
+        query.statisticsUpdateHandler = {query, statistics, collection, error in
+            guard let collection = collection else {print("No Collection Exists"); return}
+
+            collection.enumerateStatistics(from: .startOfDay, to: Date()){ (result, stop) in
+                guard let sumQuantity = result.sumQuantity()?.doubleValue(for: .minute()) else {return}
+                self.moveTime = sumQuantity
+            }
+        }
+        healthStore.execute(query)
+    }
+
+    @MainActor
+    func getStepLength() {
+        let query = HKStatisticsCollectionQuery(quantityType: HKQuantityType.quantityType(forIdentifier: .walkingStepLength)!, quantitySamplePredicate: nil, options: [.discreteAverage], anchorDate: Calendar.current.startOfDay(for: Date()), intervalComponents: DateComponents(hour: 24))
+
+        query.initialResultsHandler = {query, collection, error in
+            guard let collection = collection else {print("No Collection Exists"); return}
+
+            collection.enumerateStatistics(from: .startOfDay, to: Date()) {(result, stop) in
+                guard let sumQuantity = result.sumQuantity()?.doubleValue(for: .inch()) else {return}
+                self.walkingLength = sumQuantity
+            }
+        }
+
+        query.statisticsUpdateHandler = {query, statistics, collection, error in
+            guard let collection = collection else {print("No Collection Exists"); return}
+
+            collection.enumerateStatistics(from: .startOfDay, to: Date()){ (result, stop) in
+                guard let sumQuantity = result.sumQuantity()?.doubleValue(for: .inch()) else {return}
+                self.walkingLength = sumQuantity
+            }
+        }
+        healthStore.execute(query)
+    }
+
+    @MainActor
+    func getWalkingSpeed() {
+        let query = HKStatisticsCollectionQuery(quantityType: HKQuantityType.quantityType(forIdentifier: .walkingSpeed)!, quantitySamplePredicate: nil, options: [.discreteAverage], anchorDate: Calendar.current.startOfDay(for: Date()), intervalComponents: DateComponents(hour: 24))
+
+        query.initialResultsHandler = {query, collection, error in
+            guard let collection = collection else {print("No Collection Exists"); return}
+
+            collection.enumerateStatistics(from: .startOfDay, to: Date()) {(result, stop) in
+                guard let sumQuantity = result.sumQuantity()?.doubleValue(for: HKUnit.mile().unitDivided(by: HKUnit.hour())) else {return}
+                self.walkingSpeed = sumQuantity
+            }
+        }
+
+        query.statisticsUpdateHandler = {query, statistics, collection, error in
+            guard let collection = collection else {print("No Collection Exists"); return}
+
+            collection.enumerateStatistics(from: .startOfDay, to: Date()){ (result, stop) in
+                guard let sumQuantity = result.sumQuantity()?.doubleValue(for: HKUnit.mile().unitDivided(by: HKUnit.hour())) else {return}
+                self.walkingSpeed = sumQuantity
+            }
+        }
+        healthStore.execute(query)
+    }
+
+    func fetchData (quantityType: HKQuantityTypeIdentifier, startDate: Date, options: HKStatisticsOptions, unit: HKUnit) async -> Double {
+        guard let
+                quantityType = HKObjectType.quantityType(forIdentifier: quantityType)
+        else {
+            fatalError("Unable to get the quantity type")
+        }
+
+        let calendar = Calendar.current
+        let interval = DateComponents(hour: 1)
+
+        guard let
+            anchorDate = calendar.date(bySettingHour: 0, minute: 0, second: 1, of: Date())
+        else {
+            fatalError()
+        }
+
+        let query = HKStatisticsCollectionQuery(
+            quantityType: quantityType,
+            quantitySamplePredicate: nil,
+            options: options,
+            anchorDate: anchorDate,
+            intervalComponents: interval
+        )
+
+        return await withCheckedContinuation {continuation in
+            query.initialResultsHandler = { query, result, error in
+                guard let
+                    result = result
+                else {
+                    continuation.resume(returning: 0.0)
+                    return
+                }
+
+                var value = 0.0
+
+                result.enumerateStatistics(from: .startOfDay, to: Date()) { statistics, stop in
+                    value = (statistics.sumQuantity()?.doubleValue(for: unit) ?? 0.0)
+                }
+
+                continuation.resume(returning: value)
+            }
+
+            query.statisticsUpdateHandler = {query, statistics, collection, error in
+                guard let
+                    collection = collection
+                else {
+                    continuation.resume(returning: 0.0)
+                    return
+                }
+
+                var value = 0.0
+
+                collection.enumerateStatistics(from: .startOfDay, to: Date()){ (statistics, stop) in
+                    value = (statistics.sumQuantity()?.doubleValue(for: unit) ?? 0.0)
+                }
+            }
+
+            healthStore.execute(query)
+        }
+    }
+
+    @MainActor
+    func fetchData(quantityType: HKQuantityTypeIdentifier, options: HKStatisticsOptions, unit: HKUnit) -> Double {
+        let query = HKStatisticsCollectionQuery(quantityType: HKQuantityType.quantityType(forIdentifier: quantityType)!, quantitySamplePredicate: nil, options: options, anchorDate: Calendar.current.startOfDay(for: Date()), intervalComponents: DateComponents(hour: 24))
+
+        var value = 0.0
+
+        query.initialResultsHandler = {query, result, error in
+            guard let
+                result = result
+            else {
+                print(error?.localizedDescription ?? "Result Error")
+                return
+            }
+
+            result.enumerateStatistics(from: .startOfDay, to: Date()) {(statistics, stop) in
+                if let sumQuantity = statistics.sumQuantity() {
+                    value = sumQuantity.doubleValue(for: unit)
+                } else {
+                    print(error?.localizedDescription ?? "Error getting initial step results")
+                    return
+                }
+            }
+        }
+
+        query.statisticsUpdateHandler = {query, statistics, result, error in
+            guard let
+                result = result
+            else {
+                print("No Result Exists")
+                return
+            }
+
+            result.enumerateStatistics(from: .startOfDay, to: Date()){ (result, stop) in
+                if let sumQuantity = result.sumQuantity() {
+                    value = sumQuantity.doubleValue(for: unit)
+                }
+                else {
+                    print("Error getting update results")
+                    return
+                }
+            }
+        }
+
+        healthStore.execute(query)
+
+        return value
+    }
+}
+
+    @MainActor
+    func getStepsQuery() {
+        let query = HKStatisticsCollectionQuery(quantityType: HKQuantityType.quantityType(forIdentifier: .stepCount)!, quantitySamplePredicate: nil, options: [.cumulativeSum], anchorDate: Calendar.current.startOfDay(for: Date()), intervalComponents: DateComponents(hour: 24))
+
+        query.initialResultsHandler = {query, results, error in
+            guard let
+                collection = results
+            else {
+                print(error?.localizedDescription ?? "Collection Error")
+                return
+            }
+
+            collection.enumerateStatistics(from: .startOfDay, to: Date()) {(statistics, stop) in
+                if let sumQuantity = statistics.sumQuantity() {
+                    self.stepCount = Int(sumQuantity.doubleValue(for: .count()))
+                    self.hourlyStepCount.append(Step(date: statistics.startDate, count: sumQuantity.doubleValue(for: .count())))
+                } else {
+                    print(error?.localizedDescription ?? "Error getting initial step results")
+                    return
+                }
+            }
+        }
+
+        query.statisticsUpdateHandler = {query, statistics, collection, error in
+            guard let
+                collection = collection
+            else {
+                print("No Collection Exists")
+                return
+            }
+
+            collection.enumerateStatistics(from: .startOfDay, to: Date()){ (result, stop) in
+                guard let
+                    sumQuantity = result.sumQuantity()?.doubleValue(for: .count())
+                else {
+                    print("Error getting update results")
+                    return
+                }
+                self.stepCount = Int(sumQuantity)
+                self.hourlyStepCount.append(Step(date: result.startDate, count: sumQuantity))
+            }
+        }
+        healthStore!.execute(query)
+    }
+    
+                    Text("Steps: \(viewModel.healthData.stepCount.formattedString())")
+                    Text("Distance: \(viewModel.healthData.distanceWalkingRunning.formattedString(2))")
+                    Text("Calories: \(viewModel.healthData.activeEnergyBurned.formattedString(2))")
+                    Text("Move Time: \(viewModel.healthData.appleMoveTime.formattedString(2))")
+                    Text("Walking Speed: \(viewModel.healthData.walkingSpeed.formattedString(2))")
+                    Text("Walking Step Length: \(viewModel.healthData.walkingStepLength.formattedString(2))")
+                    

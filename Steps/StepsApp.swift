@@ -6,15 +6,15 @@
 //
 
 import SwiftUI
-import SwiftData
 
 @main
 struct StepsApp: App {
-
+    @State private var viewModel = HealthDataViewModel()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(for: Item.self)
+        .environment(viewModel)
     }
 }
