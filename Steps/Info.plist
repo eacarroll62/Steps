@@ -2,11 +2,11 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>fetch</string>
-		<string>processing</string>
-		<string>remote-notification</string>
-	</array>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>We use Health data to track your activity, steps, and other metrics.</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>This app shows step count, calories burned, distance walked, step length, and walking speed.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>We use motion data to track your physical activity.</string>
 </dict>
 </plist>

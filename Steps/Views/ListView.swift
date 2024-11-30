@@ -8,33 +8,46 @@
 import SwiftUI
 
 struct ListView: View {
-    @State var viewModel: HealthDataViewModel
+    @StateObject var healthKitManager = HealthKitManager()
     
-    let mockData: [Step] = [Step(date: Date.from(2023, 09, 24, 7), count: 180.00), Step(date: Date.from(2023, 09, 24, 9), count: 937.00), Step(date: Date.from(2023, 09, 24, 11), count: 627.00), Step(date: Date.from(2023, 09, 24, 14), count: 1679.00), Step(date: Date.from(2023, 09, 24, 17), count: 2735.00), Step(date: Date.from(2023, 09, 24, 20), count: 1787.00)]
+//    let mockData: [HealthData] = [
+//        HealthData(date: Date.from(2023, 09, 24, 7), count: 180.00),
+//        HealthData(date: Date.from(2023, 09, 24, 9), count: 937.00),
+//        HealthData(date: Date.from(2023, 09, 24, 11), count: 627.00),
+//        HealthData(date: Date.from(2023, 09, 24, 14), count: 1679.00),
+//        HealthData(date: Date.from(2023, 09, 24, 17), count: 2735.00),
+//        HealthData(date: Date.from(2023, 09, 24, 20), count: 1787.00)
+//    ]
     
     var body: some View {
         ZStack {
             Color(.clear).ignoresSafeArea(.all)
-            List {
+//            List {
 //                ForEach(mockData) { daily in
-                    ForEach(viewModel.healthData.allStepData.sorted(by: <), id:\.hashValue) { daily in
-                    HStack {
-                        Text("Hour/Steps: \(Calendar.current.component(.hour, from: daily.date))")
-                        Text("\(Int(daily.count))")
-                    }
-                }
-            }
-            .refreshable {
-                do {
-                    try await viewModel.fetchAllStepData()
-                } catch {
-                    print(error.localizedDescription)
-                }
+//                    ForEach(healthKitManager.hourlySteps.keys.sorted(), id: \.self) { daily in
+//                    HStack {
+//                        Text("Hour/Steps: \(Calendar.current.component(.hour, from: daily.date))")
+//                        Text("\(Int(daily.count))")
+//                    }
+//                }
+//            }
+//            .refreshable {
+//                do {
+//                    try await healthKitManager.totalSteps
+//                } catch {
+//                    print(error.localizedDescription)
+//                }
+//            }
+        }
+        .onAppear {
+            Task {
+                await healthKitManager.requestAuthorization()
+                await healthKitManager.fetchMetrics()
             }
         }
     }
 }
 
 #Preview {
-    ListView(viewModel: HealthDataViewModel())
+    ListView()
 }

@@ -8,16 +8,16 @@
 import SwiftUI
 
 struct DisplayChartOrListView: View {
-    @Environment(HealthDataViewModel.self) var viewModel
+    @StateObject var healthKitManager = HealthKitManager()
     @State private var displayType: DisplayType = .chart
     
     var body: some View {
         Group {
             switch displayType {
                 case .list:
-                    ListView(viewModel: viewModel)
+                    ListView()
                 case .chart:
-                    ChartView(viewModel: viewModel)
+                    ChartView()
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -36,5 +36,4 @@ struct DisplayChartOrListView: View {
 
 #Preview {
     DisplayChartOrListView()
-        .environment(HealthDataViewModel())
 }

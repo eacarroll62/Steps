@@ -1,21 +1,17 @@
 //
-//  Enums, Constants, Extenstions.swift
+//  Colors.swift
 //  Steps
 //
-//  Created by Eric Carroll on 8/20/23.
+//  Created by Eric Carroll on 11/27/24.
 //
 
 import SwiftUI
 
 struct ColorConstants {
-//    static let topColor1 = Color.init(red: 31/255, green: 15/255, blue: 119/255)
-//    static let topColor2 = Color.init(red: 12/255, green: 39/255, blue: 186/255)
     static let topColor1 = Color.lightBlue
     static let topColor2 = Color.mediumSlateBlue
     static let bottomColor1 = Color.lightSeaGreen
     static let bottomColor2 = Color.honeydew
-//    static let bottomColor1 = Color.init(red: 100/255, green: 24/255, blue: 131/255)
-//    static let bottomColor2 = Color.init(red: 221/255, green: 19/255, blue: 130/255)
     
     static let backgroundGradient = Gradient(colors: [bottomColor1, bottomColor2, topColor1, topColor2])
 }
@@ -54,103 +50,4 @@ extension Color {
     static let honeydew = Color(red: 212 / 255, green: 251 / 255, blue: 121 / 255, opacity: 1.0)
     static let lemon = Color(red: 255 / 255, green: 251 / 255, blue: 0 / 255, opacity: 1.0)
     static let hunterGreen = Color(red: 68/255, green: 105/255, blue: 61/255, opacity: 1.0)
-}
-
-extension Date {
-    static var startOfDay: Date {
-        return Calendar.current.startOfDay(for: Date())
-    }
-}
-
-extension Date {
-    static func from(_ year: Int, _ month: Int, _ day: Int, _ hour: Int) -> Date {
-        let calendar = Calendar(identifier: .gregorian)
-        let dateComponents = DateComponents(calendar: calendar, year: year, month: month, day: day, hour: hour)
-        return calendar.date(from: dateComponents)!
-    }
-}
-
-extension Double {
-    func formattedString(_ maxDigits: Int = 0) -> String {
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .decimal
-        numberFormatter.minimumFractionDigits = maxDigits
-        numberFormatter.maximumFractionDigits = maxDigits
-        
-        return numberFormatter.string(from: NSNumber(value: self))!
-    }
-}
-
-extension Int {
-    func formattedString() -> String {
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .decimal
-        numberFormatter.minimumFractionDigits = 0
-        numberFormatter.maximumFractionDigits = 0
-        return numberFormatter.string(from: NSNumber(value: self))!
-    }
-}
-
-struct DataItemView: View {
-    let dataItem: DataItem
-    var body: some View {
-        VStack {
-            Image(systemName: dataItem.imageName)
-                .foregroundColor(dataItem.imageColor)
-                .font(.system(size: 16))
-                .shadow(color: dataItem.imageColor.opacity(0.5), radius: 10, x: 4, y: 24)
-            
-            Text(dataItem.value)
-                .font(.system(size: 16, design: .monospaced))
-                .fixedSize()
-                .frame(width: 36)
-                .padding(.top, 10)
-            
-            Text(dataItem.unit)
-                .font(.system(size: 16))
-        }
-        .foregroundColor(.whiteSmoke)
-    }
-}
-
-#Preview {
-    DataItemView(dataItem: DataItem(imageName: "bell.badge.fill", imageColor: .orange, value: "0", unit: "Miles"))
-}
-
-struct DataItem {
-    let id = UUID()
-    let imageName: String
-    let imageColor: Color
-    var value: String
-    var unit: String
-}
-
-extension Int: VectorArithmetic {
-    mutating public func scale(by rhs: Double) {
-        self = Int(Double(self) * rhs)
-    }
-
-    public var magnitudeSquared: Double {
-        Double(self * self)
-    }
-}
-
-enum DisplayType: Int, Identifiable, CaseIterable {
-    case list
-    case chart
-    
-    var id: Int {
-        rawValue
-    }
-}
-
-extension DisplayType {
-    var icon: String {
-        switch self {
-            case .list:
-                return "list.bullet"
-            case .chart:
-                return "chart.bar"
-        }
-    }
 }

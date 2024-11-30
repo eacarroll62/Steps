@@ -9,12 +9,12 @@ import SwiftUI
 
 @main
 struct StepsApp: App {
-    @State private var viewModel = HealthDataViewModel()
-    
+    @StateObject private var healthKitManager = HealthKitManager()
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainView()
+                .environmentObject(healthKitManager)  // Inject HealthKitManager into the environment
         }
-        .environment(viewModel)
     }
 }
