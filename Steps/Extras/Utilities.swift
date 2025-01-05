@@ -71,3 +71,28 @@ extension DisplayType {
         }
     }
 }
+
+struct DataManagerKey: EnvironmentKey {
+    static let defaultValue: DataManager? = nil
+}
+
+extension EnvironmentValues {
+    var dataManager: DataManager? {
+        get { self[DataManagerKey.self] }
+        set { self[DataManagerKey.self] = newValue }
+    }
+}
+
+extension Date {
+    func currentHourKey() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "HH"
+        return dateFormatter.string(from: self)
+    }
+
+    func currentDayKey() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        return dateFormatter.string(from: self)
+    }
+}

@@ -34,18 +34,12 @@ struct DataItemView: View {
 
 #Preview {
     HStack {
-        DataItemView(dataItem: DataItem(imageName: "flame.fill", imageColor: Color.red, value: "500", unit: "kcal"))
-        DataItemView(dataItem: DataItem(imageName: "figure.walk", imageColor: Color.blue, value: "5.2", unit: "miles"))
-        DataItemView(dataItem: DataItem(imageName: "stopwatch.fill", imageColor: Color.green, value: "210", unit: "mins"))
-        DataItemView(dataItem: DataItem(imageName: "ruler", imageColor: Color.purple, value: "19.2", unit: "inches"))
-        DataItemView(dataItem: DataItem(imageName: "speedometer", imageColor: Color.crimson, value: "2.3", unit: "mph"))
+        DataItemView(dataItem: DataItem(imageName: "flame.fill", imageColor: Color.red, value: "500", unit: "kcal", accessibilityHint: "Calories"))
+        DataItemView(dataItem: DataItem(imageName: "figure.walk", imageColor: Color.blue, value: "5.2", unit: "miles", accessibilityHint: "Distance Walked"))
+        DataItemView(dataItem: DataItem(imageName: "stopwatch.fill", imageColor: Color.green, value: "210", unit: "mins", accessibilityHint: "Activity Time"))
+        DataItemView(dataItem: DataItem(imageName: "ruler", imageColor: Color.purple, value: "19.2", unit: "inches", accessibilityHint: "Step Length"))
+        DataItemView(dataItem: DataItem(imageName: "speedometer", imageColor: Color.crimson, value: "2.3", unit: "mph", accessibilityHint: "Walking Speed"))
     }
 }
 
-struct DataItem {
-    let id = UUID()
-    let imageName: String
-    let imageColor: Color
-    var value: String
-    var unit: String
-}
+

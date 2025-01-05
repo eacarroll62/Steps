@@ -1,0 +1,24 @@
+# Xcode
+*.xcuserstate
+*.xcworkspace
+xcuserdata/
+derivedData/
+build/
+*.moved-aside
+*.swp
+.DS_Store
+
+# Swift Package Manager
+.build/
+Packages/
+
+# Carthage
+Carthage/Build/
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# User-specific files
+*.log
+*.xcodeproj/project.xcworkspace

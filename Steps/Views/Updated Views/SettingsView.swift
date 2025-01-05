@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @StateObject var settingsManager = SettingsManager()
-    @Environment(\.colorScheme) var colorScheme  // To read the current system color scheme
+    @EnvironmentObject var healthKitManager: HealthKitManager
+    @EnvironmentObject var settingsManager: SettingsManager
+    
     @Binding var showSettings: Bool
     
     var body: some View {
@@ -18,8 +19,9 @@ struct SettingsView: View {
             VStack(alignment: .leading, spacing: 20) {
                 Text("Set Goal Steps")
                     .font(.headline)
-                Stepper(value: $settingsManager.goalSteps, in: 0...100000, step: 100) {
-                    Text("Goal Steps: \(settingsManager.goalSteps)")
+                
+                Stepper(value: $healthKitManager.goalSteps, in: 0...100000, step: 100) {
+                    Text("Goal Steps: \(healthKitManager.goalSteps)")
                 }
                 .padding()
             }
@@ -29,15 +31,7 @@ struct SettingsView: View {
                 Text("Appearance")
                     .font(.headline)
                 
-                Toggle(isOn: Binding(
-                    get: {
-                        // If isDarkMode is nil, default to system setting, but access colorScheme after main thread initialization
-                        settingsManager.isDarkMode
-                    },
-                    set: { newValue in
-                        settingsManager.isDarkMode = newValue
-                    }
-                )) {
+                Toggle(isOn: $settingsManager.isDarkMode) {
                     Text("Dark Mode")
                 }
                 .padding()
@@ -69,6 +63,8 @@ struct SettingsView: View {
     }
 }
 
-#Preview("SettingsView") {
-    SettingsView(showSettings: .constant(false))
-}
+//#Preview("SettingsView") {
+//    SettingsView(showSettings: .constant(false))
+//        .environmentObject(HealthKitManager())
+//        .environmentObject(SettingsManager())
+//}

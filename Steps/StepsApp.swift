@@ -6,15 +6,37 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct StepsApp: App {
-    @StateObject private var healthKitManager = HealthKitManager()
+    @StateObject private var settingsManager = SettingsManager()
+    @StateObject private var healthKitManager: HealthKitManager
+    private let modelContainer: ModelContainer
+    private let dataManager: DataManager
+
+    init() {
+        // Initialize ModelContainer
+        do {
+            modelContainer = try ModelContainer(for: DailyStats.self)
+        } catch {
+            fatalError("Failed to initialize ModelContainer: \(error)")
+        }
+        
+        // Initialize DataManager with the modelContext
+        dataManager = DataManager(modelContext: modelContainer.mainContext)
+        
+        let healthKitManager = HealthKitManager(dataManager: dataManager)
+        _healthKitManager = StateObject(wrappedValue: healthKitManager)
+    }
 
     var body: some Scene {
         WindowGroup {
             MainView()
-                .environmentObject(healthKitManager)  // Inject HealthKitManager into the environment
+                .environmentObject(settingsManager)
+                .environmentObject(healthKitManager)
+                .environment(\.dataManager, dataManager) // Inject DataManager into the environment
         }
+        .modelContainer(modelContainer) // Set up the model container for SwiftData
     }
 }

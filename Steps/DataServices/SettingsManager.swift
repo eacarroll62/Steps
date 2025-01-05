@@ -10,37 +10,38 @@ import SwiftUI
 
 @MainActor
 class SettingsManager: ObservableObject {
-    // Properties that will be persisted in UserDefaults
     @Published var goalSteps: Int {
         didSet {
-            // Save to UserDefaults whenever goalSteps is updated
-            UserDefaults.standard.set(goalSteps, forKey: "goalSteps")
+            saveGoalSteps() // Persist changes when `goalSteps` is updated
         }
     }
+    @Published var isDarkMode: Bool
 
-    @Published var isDarkMode: Bool {
-        didSet {
-            // Save to UserDefaults whenever isDarkMode is updated
-            UserDefaults.standard.set(isDarkMode, forKey: "isDarkMode")
-        }
-    }
-
-    // Initialize with default values or saved ones
     init() {
-        self.goalSteps = UserDefaults.standard.integer(forKey: "goalSteps")
-        // Set default value if no stored preference
+        // Load goalSteps from UserDefaults or set a default value
+        if let storedGoalSteps = UserDefaults.standard.object(forKey: "goalSteps") as? Int {
+            self.goalSteps = storedGoalSteps
+        } else {
+            self.goalSteps = 10_000
+            UserDefaults.standard.set(10_000, forKey: "goalSteps")
+        }
+
+        // Load isDarkMode from UserDefaults or set a default value
         if let storedDarkMode = UserDefaults.standard.value(forKey: "isDarkMode") as? Bool {
             self.isDarkMode = storedDarkMode
         } else {
-            // Default to system color scheme
             self.isDarkMode = UIScreen.main.traitCollection.userInterfaceStyle == .dark
         }
     }
 
-    // Reset the dark mode setting to the system setting
+    /// Saves the current goalSteps value to UserDefaults
+    private func saveGoalSteps() {
+        UserDefaults.standard.set(goalSteps, forKey: "goalSteps")
+    }
+
+    /// Resets dark mode to the system's default setting
     func resetDarkMode() {
-        // Set isDarkMode to the current system color scheme
         self.isDarkMode = UIScreen.main.traitCollection.userInterfaceStyle == .dark
+        UserDefaults.standard.set(isDarkMode, forKey: "isDarkMode")
     }
 }
-

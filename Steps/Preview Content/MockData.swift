@@ -15,12 +15,12 @@ struct MockData: PreviewModifier {
     
     static func makeSharedContext() async throws -> ModelContainer {
         let container = try ModelContainer(
-            for: Metric.self,
+            for: DailyStats.self,
             configurations: ModelConfiguration(isStoredInMemoryOnly: true)
         )
         
         // Insert objects here
-        Metric.mockMetrics.forEach { metric in
+        DailyStats.mockMetrics.forEach { metric in
             container.mainContext.insert(metric)
         }
         

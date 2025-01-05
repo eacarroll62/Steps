@@ -31,7 +31,7 @@ struct ChartView: View {
         ZStack {
             Color(.clear).ignoresSafeArea(.all)
             
-            Chart(healthKitManager.stepCount.keys.sorted(), id: \.self) { hour in
+            Chart(healthKitManager.hourlyStepCounts.keys.sorted(), id: \.self) { hour in
                 // Convert the hour string to a Date (just the hour part)
                 if let hourInt = Int(hour) {
                     // Create a date using the hour (e.g., "14" => "2024-01-01 14:00")
@@ -43,13 +43,13 @@ struct ChartView: View {
                     BarMark(
                         x: .value("Hour", date, unit: .hour),
                         y: .value("Steps", healthKitManager.stepCount[hour] ?? 0),
-                        width: 3
+                        width: 10
                     )
                     .foregroundStyle(Color.green)
                     .cornerRadius(4)
                 }
             }
-            .chartYScale(domain: 0...(maxDataValue + 50))
+            .chartYScale(domain: 0...(maxDataValue + 500))
             .frame(height: 150)  // Set chart height
             .padding([.leading, .trailing], 20)
             .cornerRadius(12)        // Optional: rounded corners for chart
@@ -63,7 +63,7 @@ struct ChartView: View {
                             AxisValueLabel {
                                 // Display only the hour as a string (e.g., "00", "03", "06", ...)
                                 Text("\(hour < 10 ? "0" : "")\(hour)") // Format hour with leading zero if necessary
-                                    .rotationEffect(.degrees(90)) // Rotate label for better fit
+//                                    .rotationEffect(.degrees(90)) // Rotate label for better fit
                                     .padding(.top, 10) // Optional: Add padding for better spacing
                             }
                         }
@@ -76,13 +76,13 @@ struct ChartView: View {
         }
         .onAppear {
             Task {
-                await healthKitManager.fetchMetrics()  // Trigger data fetching here
+                await healthKitManager.startTrackingMetrics(for: Date.now)  // Trigger data fetching here
             }
         }
     }
 }
 
-#Preview {
-    ChartView()
-        .environmentObject(HealthKitManager())
-}
+//#Preview {
+//    ChartView()
+//        .environmentObject(HealthKitManager())
+//}

@@ -10,7 +10,6 @@ import SwiftUI
 
 @main
 struct StepsWidgetBundle: WidgetBundle {
-    @StateObject private var healthKitManager = HealthKitManager()
     
     var body: some Widget {
         StepsWidget()

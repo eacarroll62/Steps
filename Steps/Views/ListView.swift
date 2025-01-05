@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ListView: View {
-    @StateObject var healthKitManager = HealthKitManager()
+    @StateObject var healthKitManager: HealthKitManager
     
 //    let mockData: [HealthData] = [
 //        HealthData(date: Date.from(2023, 09, 24, 7), count: 180.00),
@@ -42,12 +42,12 @@ struct ListView: View {
         .onAppear {
             Task {
                 await healthKitManager.requestAuthorization()
-                await healthKitManager.fetchMetrics()
+                await healthKitManager.startTrackingMetrics(for: Date.now)
             }
         }
     }
 }
 
-#Preview {
-    ListView()
-}
+//#Preview {
+//    ListView()
+//}

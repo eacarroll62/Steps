@@ -6,8 +6,10 @@
 //
 
 import SwiftUI
+import HealthKit
 
 struct ProgressCircle: View {
+    @Environment(\.modelContext) var context
     @EnvironmentObject var healthKitManager: HealthKitManager
     @StateObject var settingsManager = SettingsManager()
     
@@ -18,12 +20,12 @@ struct ProgressCircle: View {
             
             ZStack {
                 // Background ring (gray)
-                RingView(trimStart: 0, trimEnd: 0.8333, opacity: 0.3, color: .gray)
-                    .rotationEffect(Angle(degrees: 120))  // Start from the left
+                RingView(trimStart: 0.125, trimEnd: 0.875, opacity: 0.3, color: .gray)
+                    .rotationEffect(Angle(degrees: 90))  // Start from the left
                 
                 // Foreground ring (green) showing progress
-                RingView(trimStart: 0.1667, trimEnd: CGFloat(healthKitManager.goalPercentage), opacity: 1.0, color: .green)
-                    .rotationEffect(Angle(degrees: 60))  // Start from the left
+                RingView(trimStart: 0.125, trimEnd: CGFloat(healthKitManager.goalPercentage * 0.7292), opacity: 1.0, color: .green)
+                    .rotationEffect(Angle(degrees: 90))  // Start from the left
                 
 //                // Marker pointer
 //                MarkerView(goalPercentage: healthKitManager.goalPercentage)
@@ -35,16 +37,20 @@ struct ProgressCircle: View {
         }
         .onAppear {
             Task {
-                await healthKitManager.fetchMetrics()  // Fetch steps when view appears
+//                await healthKitManager.fetchMetrics(for: Date.now)  // Fetch steps when view appears
+                await healthKitManager.startTrackingMetrics(for: Date.now)
             }
+        }
+        .onChange(of: healthKitManager.totalSteps) {
+            try? context.save()
         }
     }
 }
 
-#Preview {
-    ProgressCircle()
-        .environmentObject(HealthKitManager())
-}
+//#Preview {
+//    ProgressCircle()
+//        .environmentObject(HealthKitManager())
+//}
 
 struct MarkerView: View {
     var goalPercentage: CGFloat
