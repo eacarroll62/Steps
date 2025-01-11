@@ -41,6 +41,7 @@ struct InfoDashboardView: View {
             dataManager?.saveDailyStats(
                 steps: healthKitManager.totalSteps,
                 distance: healthKitManager.totalDistance,
+                flights: healthKitManager.totalFlightsClimbed,
                 calories: healthKitManager.totalCalories,
                 walkingSpeed: healthKitManager.averageWalkingSpeed,
                 walkingStepLength: healthKitManager.averageWalkingStepLength,

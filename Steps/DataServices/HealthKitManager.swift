@@ -20,6 +20,7 @@ class HealthKitManager: ObservableObject {
     @Published var stepCount: [String: Int] = [:]
     @Published var activeEnergyBurned: [String: Double] = [:]
     @Published var distanceWalkingRunning: [String: Double] = [:]
+    @Published var flightsClimbed: [String: Int] = [:]
     @Published var activeTime: [String: Double] = [:]
     @Published var walkingSpeed: [String: Double] = [:]
     @Published var lastActiveTimestamp: TimeInterval? = nil
@@ -33,6 +34,7 @@ class HealthKitManager: ObservableObject {
     var totalSteps: Int { stepCount.values.reduce(0, +) }
     var totalCalories: Double { activeEnergyBurned.values.reduce(0, +) }
     var totalDistance: Double { distanceWalkingRunning.values.reduce(0, +) }
+    var totalFlightsClimbed: Int { flightsClimbed.values.reduce(0, +) }
     var totalMoveTime: Double { activeTime.values.reduce(0, +) }
     var averageWalkingSpeed: Double { calculateAverage(for: walkingSpeed) }
     var averageWalkingStepLength: Double { calculateAverage(for: walkingStepLength) }
@@ -53,6 +55,7 @@ class HealthKitManager: ObservableObject {
         dataManager?.saveDailyStats(
             steps: totalSteps,
             distance: totalDistance,
+            flights: totalFlightsClimbed,
             calories: totalCalories,
             walkingSpeed: averageWalkingSpeed,
             walkingStepLength: averageWalkingStepLength,
@@ -99,7 +102,8 @@ class HealthKitManager: ObservableObject {
             .quantityType(forIdentifier: .distanceWalkingRunning)!,
             .quantityType(forIdentifier: .activeEnergyBurned)!,
             .quantityType(forIdentifier: .walkingSpeed)!,
-            .quantityType(forIdentifier: .walkingStepLength)!
+            .quantityType(forIdentifier: .walkingStepLength)!,
+            .quantityType(forIdentifier: .flightsClimbed)!
         ]
 
         do {
@@ -115,7 +119,8 @@ class HealthKitManager: ObservableObject {
             .distanceWalkingRunning,
             .activeEnergyBurned,
             .walkingSpeed,
-            .walkingStepLength
+            .walkingStepLength,
+            .flightsClimbed
         ]
         
         for typeIdentifier in typesToCheck {
@@ -203,7 +208,8 @@ class HealthKitManager: ObservableObject {
             .activeEnergyBurned,
             .distanceWalkingRunning,
             .walkingSpeed,
-            .walkingStepLength
+            .walkingStepLength,
+            .flightsClimbed
         ]
 
         let descriptors = metrics.compactMap { metricType -> HKStatisticsCollectionQueryDescriptor? in
@@ -240,7 +246,8 @@ class HealthKitManager: ObservableObject {
         .activeEnergyBurned: HKUnit.kilocalorie(),
         .distanceWalkingRunning: HKUnit.mile(),
         .walkingSpeed: HKUnit.mile().unitDivided(by: HKUnit.hour()),
-        .walkingStepLength: HKUnit.inch()
+        .walkingStepLength: HKUnit.inch(),
+        .flightsClimbed: HKUnit.count()
     ]
 
     private func getUnit(for sampleType: HKSampleType) -> HKUnit? {
@@ -357,6 +364,10 @@ class HealthKitManager: ObservableObject {
             MetricType.walkingStepLength.rawValue: Binding(
                 get: { self.walkingStepLength },
                 set: { self.walkingStepLength = $0 }
+            ),
+            MetricType.flightsClimbed.rawValue: Binding(
+                get: { self.flightsClimbed },
+                set: { self.flightsClimbed = $0 }
             )
         ]
     }
@@ -392,6 +403,7 @@ class HealthKitManager: ObservableObject {
         case distanceWalkingRunning = "HKQuantityTypeIdentifierDistanceWalkingRunning"
         case walkingSpeed = "HKQuantityTypeIdentifierWalkingSpeed"
         case walkingStepLength = "HKQuantityTypeIdentifierWalkingStepLength"
+        case flightsClimbed = "HKQuantityTypeIdentifierFlightsClimbed"
 
         var sampleType: HKSampleType? {
             switch self {
@@ -405,6 +417,8 @@ class HealthKitManager: ObservableObject {
                 return HKQuantityType.quantityType(forIdentifier: .walkingSpeed)
             case .walkingStepLength:
                 return HKQuantityType.quantityType(forIdentifier: .walkingStepLength)
+            case .flightsClimbed:
+                return HKQuantityType.quantityType(forIdentifier: .flightsClimbed)
             }
         }
     }
@@ -432,7 +446,7 @@ class HealthKitManager: ObservableObject {
 private extension HealthKitManager.MetricType {
     var defaultOptions: HKStatisticsOptions {
         switch self {
-        case .stepCount, .activeEnergyBurned, .distanceWalkingRunning:
+            case .stepCount, .activeEnergyBurned, .distanceWalkingRunning, .flightsClimbed:
             return .cumulativeSum
         case .walkingSpeed, .walkingStepLength:
             return .discreteAverage

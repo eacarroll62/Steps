@@ -61,7 +61,8 @@ struct TestDataView: View {
     private func saveTestData() {
         dataManager?.saveDailyStats(
             steps: steps,
-            distance: Double(steps) / 1300,  // Example conversion to km
+            distance: Double(steps) / 1300,
+            flights:  2,            // Example conversion to km
             calories: Double(steps) * 0.05, // Example calorie burn
             walkingSpeed: 5.0,              // Example speed
             walkingStepLength: 0.75,        // Example step length in meters

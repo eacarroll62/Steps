@@ -13,17 +13,57 @@ struct MainView: View {
     @EnvironmentObject var healthKitManager: HealthKitManager
     @State private var showSettings: Bool = false
     
-    let upperDataItemsSet: [DataItem] = [
-        DataItem(imageName: "flame.fill", imageColor: .red, value: "150", unit: "kcal", accessibilityHint: nil),
-        DataItem(imageName: "figure.walk", imageColor: .blue, value: "2.5", unit: "miles", accessibilityHint: "Distance Walked"),
-        DataItem(imageName: "stopwatch.fill", imageColor: .green, value: "30", unit: "mins", accessibilityHint: "Active Time")
-    ]
+    private var upperDataItemsSet: [DataItem] {
+        [
+            DataItem(
+                imageName: "flame.fill",
+                imageColor: .red,
+                value: healthKitManager.totalCalories.formattedString(2),
+                unit: "kcal",
+                accessibilityHint: "Total Calories Burned"
+            ),
+            DataItem(
+                imageName: "figure.walk",
+                imageColor: .blue,
+                value: healthKitManager.totalDistance.formattedString(2),
+                unit: "miles",
+                accessibilityHint: "Total Distance Walked"
+            ),
+            DataItem(
+                imageName: "stopwatch.fill",
+                imageColor: .green,
+                value: healthKitManager.totalMoveTime.formattedString(0),
+                unit: "mins",
+                accessibilityHint: "Active Time"
+            )
+        ]
+    }
 
-    let lowerDataItemsSet: [DataItem] = [
-        DataItem(imageName: "ruler", imageColor: .purple, value: "28", unit: "inches", accessibilityHint: nil),
-        DataItem(imageName: "speedometer", imageColor: .crimson, value: "3.2", unit: "mph", accessibilityHint: "Average Speed"),
-        DataItem(imageName: "waveform.path.ecg", imageColor: .orange, value: "65", unit: "bpm", accessibilityHint: "Heart Rate")
-    ]
+    private var lowerDataItemsSet: [DataItem] {
+        [
+            DataItem(
+                imageName: "ruler",
+                imageColor: .purple,
+                value: healthKitManager.averageWalkingStepLength.formattedString(1),
+                unit: "inches",
+                accessibilityHint: "Average Step Length"
+            ),
+            DataItem(
+                imageName: "speedometer",
+                imageColor: .crimson,
+                value: healthKitManager.averageWalkingSpeed.formattedString(1),
+                unit: "mph",
+                accessibilityHint: "Average Walking Speed"
+            ),
+            DataItem(
+                imageName: "figure.stairs",
+                imageColor: .orange,
+                value: healthKitManager.totalFlightsClimbed.formattedString(),
+                unit: "flights",
+                accessibilityHint: "Flights Climbed"
+            )
+        ]
+    }
     
     var body: some View {
         NavigationStack {

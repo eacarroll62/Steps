@@ -16,7 +16,7 @@ class DataManager: ObservableObject {
         self.modelContext = modelContext
     }
     
-    func saveDailyStats(steps: Int, distance: Double, calories: Double, walkingSpeed: Double, walkingStepLength: Double, activeTime: Double, stepGoal: Int) {
+    func saveDailyStats(steps: Int, distance: Double, flights: Int, calories: Double, walkingSpeed: Double, walkingStepLength: Double, activeTime: Double, stepGoal: Int) {
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
         
