@@ -26,6 +26,8 @@
 		A8C22E9D2D2B055C00BDA6A0 /* DataItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8C22E9B2D2B055C00BDA6A0 /* DataItem.swift */; };
 		A8C22E9F2D2B0B0C00BDA6A0 /* DataItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8C22E9E2D2B0B0C00BDA6A0 /* DataItemViewModel.swift */; };
 		A8C22EA02D2B0B0C00BDA6A0 /* DataItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8C22E9E2D2B0B0C00BDA6A0 /* DataItemViewModel.swift */; };
+		A8C22F002D34980D00BDA6A0 /* AppContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8C22EFF2D34980D00BDA6A0 /* AppContainer.swift */; };
+		A8C22F012D34980D00BDA6A0 /* AppContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8C22EFF2D34980D00BDA6A0 /* AppContainer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -80,6 +82,7 @@
 		A8BBF1942C612AF6000951DE /* HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitManager.swift; sourceTree = "<group>"; };
 		A8C22E9B2D2B055C00BDA6A0 /* DataItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataItem.swift; sourceTree = "<group>"; };
 		A8C22E9E2D2B0B0C00BDA6A0 /* DataItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataItemViewModel.swift; sourceTree = "<group>"; };
+		A8C22EFF2D34980D00BDA6A0 /* AppContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContainer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -142,6 +145,7 @@
 				A89BE6D42CEC2E5900129442 /* DailyStats.swift */,
 				A8C22E9B2D2B055C00BDA6A0 /* DataItem.swift */,
 				A8C22E9E2D2B0B0C00BDA6A0 /* DataItemViewModel.swift */,
+				A8C22EFF2D34980D00BDA6A0 /* AppContainer.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -320,6 +324,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A8C22F012D34980D00BDA6A0 /* AppContainer.swift in Sources */,
 				A89BE6D52CEC2E5900129442 /* DailyStats.swift in Sources */,
 				A8C22E9D2D2B055C00BDA6A0 /* DataItem.swift in Sources */,
 				A89BE6D32CEC2D1E00129442 /* MockData.swift in Sources */,
@@ -340,6 +345,7 @@
 				A89BE6F62CF4342F00129442 /* SettingsManager.swift in Sources */,
 				A89BE6F32CF4339D00129442 /* HealthKitManager.swift in Sources */,
 				A8C22E9C2D2B055C00BDA6A0 /* DataItem.swift in Sources */,
+				A8C22F002D34980D00BDA6A0 /* AppContainer.swift in Sources */,
 				A8C22E9F2D2B0B0C00BDA6A0 /* DataItemViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 extension Date {
     static var startOfDay: Date {
@@ -96,3 +97,19 @@ extension Date {
         return dateFormatter.string(from: self)
     }
 }
+
+//extension AppContainer {
+//    static func createFallback() -> AppContainer {
+//        let container = try? ModelContainer(for: DailyStats.self)
+//        let fallbackDataManager = DataManager(modelContext: container?.mainContext ?? nil)
+//        let fallbackHealthKitManager = HealthKitManager(dataManager: fallbackDataManager)
+//        let fallbackSettingsManager = SettingsManager()
+//
+//        let appContainer = AppContainer()
+//        appContainer.dataManager = fallbackDataManager
+//        appContainer.healthKitManager = fallbackHealthKitManager
+//        appContainer.settingsManager = fallbackSettingsManager
+//
+//        return appContainer
+//    }
+//}

@@ -39,6 +39,9 @@ struct DataItemView: View {
         DataItemView(dataItem: DataItem(imageName: "stopwatch.fill", imageColor: Color.green, value: "210", unit: "mins", accessibilityHint: "Activity Time"))
         DataItemView(dataItem: DataItem(imageName: "ruler", imageColor: Color.purple, value: "19.2", unit: "inches", accessibilityHint: "Step Length"))
         DataItemView(dataItem: DataItem(imageName: "speedometer", imageColor: Color.crimson, value: "2.3", unit: "mph", accessibilityHint: "Walking Speed"))
+        DataItemView(dataItem: DataItem(imageName: "figure.stairs",
+            imageColor: .orange, value: "3", unit: "flights",
+            accessibilityHint: "Flights Climbed"))
     }
 }
 

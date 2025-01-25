@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Charts
+import SwiftData
 
 struct ChartView: View {
     @EnvironmentObject var healthKitManager: HealthKitManager
@@ -81,8 +82,3 @@ struct ChartView: View {
         }
     }
 }
-
-//#Preview {
-//    ChartView()
-//        .environmentObject(HealthKitManager())
-//}

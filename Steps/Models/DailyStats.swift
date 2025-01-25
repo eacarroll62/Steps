@@ -16,6 +16,7 @@ class DailyStats {
     var calories: Double
     var activeTime: Double
     var walkingSpeed: Double
+    var flightsClimbed: Int
     var walkingStepLength: Double
     var stepGoal: Int
     
@@ -26,6 +27,7 @@ class DailyStats {
         calories: Double = 0,
         activeTime: Double = 0,
         walkingSpeed: Double = 0,
+        flightsClimbed: Int = 0,
         walkingStepLength: Double = 0,
         stepGoal: Int = 0
     ) {
@@ -35,36 +37,37 @@ class DailyStats {
         self.calories = calories
         self.activeTime = activeTime
         self.walkingSpeed = walkingSpeed
+        self.flightsClimbed = flightsClimbed
         self.walkingStepLength = walkingStepLength
         self.stepGoal = stepGoal
     }
     
     static var mockMetrics: [DailyStats] {
         [
-            DailyStats(date: Date.from(2023, 09, 23, 24), steps: 180, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, walkingStepLength: 1000.00, stepGoal: 10000),
-            DailyStats(date: Date.from(2023, 09, 24, 1), steps: 180, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, walkingStepLength: 1000.00, stepGoal: 10000),
-            DailyStats(date: Date.from(2023, 09, 24, 2), steps: 190, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, walkingStepLength: 1000.00, stepGoal: 10000),
-            DailyStats(date: Date.from(2023, 09, 24, 3), steps: 200, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, walkingStepLength: 1000.00, stepGoal: 10000),
-            DailyStats(date: Date.from(2023, 09, 24, 4), steps: 210, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, walkingStepLength: 1000.00, stepGoal: 10000),
-            DailyStats(date: Date.from(2023, 09, 24, 5), steps: 220, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, walkingStepLength: 1000.00, stepGoal: 10000),
-            DailyStats(date: Date.from(2023, 09, 24, 6), steps: 230, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, walkingStepLength: 1000.00, stepGoal: 10000),
-            DailyStats(date: Date.from(2023, 09, 24, 7), steps: 180, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, walkingStepLength: 1000.00, stepGoal: 10000),
-            DailyStats(date: Date.from(2023, 09, 24, 8), steps: 240, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, walkingStepLength: 1000.00, stepGoal: 10000),
-            DailyStats(date: Date.from(2023, 09, 24, 9), steps: 937, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, walkingStepLength: 1000.00, stepGoal: 10000),
-            DailyStats(date: Date.from(2023, 09, 24, 10), steps: 1005, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, walkingStepLength: 1000.00, stepGoal: 10000),
-            DailyStats(date: Date.from(2023, 09, 24, 11), steps: 627, distance: 1000.00, calories: 10000, activeTime: 1000.00, walkingSpeed: 1000.00, walkingStepLength: 1000.00, stepGoal: 10000),
-            DailyStats(date: Date.from(2023, 09, 24, 12), steps: 739, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, walkingStepLength: 1000.00, stepGoal: 10000),
-            DailyStats(date: Date.from(2023, 09, 24, 13), steps: 836, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, walkingStepLength: 1000.00, stepGoal: 10000),
-            DailyStats(date: Date.from(2023, 09, 24, 14), steps: 1679, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, walkingStepLength: 1000.00, stepGoal: 10000),
-            DailyStats(date: Date.from(2023, 09, 24, 15), steps: 912, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, walkingStepLength: 1000.00, stepGoal: 10000),
-            DailyStats(date: Date.from(2023, 09, 24, 16), steps: 780, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, walkingStepLength: 1000.00, stepGoal: 10000),
-            DailyStats(date: Date.from(2023, 09, 24, 17), steps: 2735, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, walkingStepLength: 1000.00, stepGoal: 10000),
-            DailyStats(date: Date.from(2023, 09, 24, 18), steps: 680, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, walkingStepLength: 1000.00, stepGoal: 10000),
-            DailyStats(date: Date.from(2023, 09, 24, 19), steps: 1180, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, walkingStepLength: 1000.00, stepGoal: 10000),
-            DailyStats(date: Date.from(2023, 09, 24, 20), steps: 1787, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, walkingStepLength: 1000.00, stepGoal: 10000),
-            DailyStats(date: Date.from(2023, 09, 24, 21), steps: 180, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, walkingStepLength: 1000.00, stepGoal: 10000),
-            DailyStats(date: Date.from(2023, 09, 24, 22), steps: 180, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, walkingStepLength: 1000.00, stepGoal: 10000),
-            DailyStats(date: Date.from(2023, 09, 24, 23), steps: 180, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, walkingStepLength: 1000.00, stepGoal: 10000)
+            DailyStats(date: Date.from(2023, 09, 23, 24), steps: 180, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, flightsClimbed: 0, walkingStepLength: 1000.00, stepGoal: 10000),
+            DailyStats(date: Date.from(2023, 09, 24, 01), steps: 180, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, flightsClimbed: 0, walkingStepLength: 1000.00, stepGoal: 10000),
+            DailyStats(date: Date.from(2023, 09, 24, 02), steps: 190, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, flightsClimbed: 0, walkingStepLength: 1000.00, stepGoal: 10000),
+            DailyStats(date: Date.from(2023, 09, 24, 03), steps: 200, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, flightsClimbed: 0, walkingStepLength: 1000.00, stepGoal: 10000),
+            DailyStats(date: Date.from(2023, 09, 24, 04), steps: 210, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, flightsClimbed: 0, walkingStepLength: 1000.00, stepGoal: 10000),
+            DailyStats(date: Date.from(2023, 09, 24, 05), steps: 220, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, flightsClimbed: 0, walkingStepLength: 1000.00, stepGoal: 10000),
+            DailyStats(date: Date.from(2023, 09, 24, 06), steps: 230, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, flightsClimbed: 0, walkingStepLength: 1000.00, stepGoal: 10000),
+            DailyStats(date: Date.from(2023, 09, 24, 07), steps: 180, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, flightsClimbed: 0, walkingStepLength: 1000.00, stepGoal: 10000),
+            DailyStats(date: Date.from(2023, 09, 24, 08), steps: 240, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, flightsClimbed: 0, walkingStepLength: 1000.00, stepGoal: 10000),
+            DailyStats(date: Date.from(2023, 09, 24, 09), steps: 937, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, flightsClimbed: 0, walkingStepLength: 1000.00, stepGoal: 10000),
+            DailyStats(date: Date.from(2023, 09, 24, 10), steps: 1005, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, flightsClimbed: 0, walkingStepLength: 1000.00, stepGoal: 10000),
+            DailyStats(date: Date.from(2023, 09, 24, 11), steps: 627, distance: 1000.00, calories: 10000, activeTime: 1000.00, walkingSpeed: 1000.00, flightsClimbed: 0, walkingStepLength: 1000.00, stepGoal: 10000),
+            DailyStats(date: Date.from(2023, 09, 24, 12), steps: 739, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, flightsClimbed: 0, walkingStepLength: 1000.00, stepGoal: 10000),
+            DailyStats(date: Date.from(2023, 09, 24, 13), steps: 836, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, flightsClimbed: 0, walkingStepLength: 1000.00, stepGoal: 10000),
+            DailyStats(date: Date.from(2023, 09, 24, 14), steps: 1679, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, flightsClimbed: 0, walkingStepLength: 1000.00, stepGoal: 10000),
+            DailyStats(date: Date.from(2023, 09, 24, 15), steps: 912, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, flightsClimbed: 0, walkingStepLength: 1000.00, stepGoal: 10000),
+            DailyStats(date: Date.from(2023, 09, 24, 16), steps: 780, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, flightsClimbed: 0, walkingStepLength: 1000.00, stepGoal: 10000),
+            DailyStats(date: Date.from(2023, 09, 24, 17), steps: 2735, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, flightsClimbed: 0, walkingStepLength: 1000.00, stepGoal: 10000),
+            DailyStats(date: Date.from(2023, 09, 24, 18), steps: 680, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, flightsClimbed: 0, walkingStepLength: 1000.00, stepGoal: 10000),
+            DailyStats(date: Date.from(2023, 09, 24, 19), steps: 1180, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, flightsClimbed: 0, walkingStepLength: 1000.00, stepGoal: 10000),
+            DailyStats(date: Date.from(2023, 09, 24, 20), steps: 1787, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, flightsClimbed: 0, walkingStepLength: 1000.00, stepGoal: 10000),
+            DailyStats(date: Date.from(2023, 09, 24, 21), steps: 180, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, flightsClimbed: 0, walkingStepLength: 1000.00, stepGoal: 10000),
+            DailyStats(date: Date.from(2023, 09, 24, 22), steps: 180, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, flightsClimbed: 0, walkingStepLength: 1000.00, stepGoal: 10000),
+            DailyStats(date: Date.from(2023, 09, 24, 23), steps: 180, distance: 1000.00, calories: 1000.00, activeTime: 1000.00, walkingSpeed: 1000.00, flightsClimbed: 0, walkingStepLength: 1000.00, stepGoal: 10000)
         ]
     }
     
